@@ -39,22 +39,27 @@ class FFMPEG_VideoReader:
         self.size = infos['video_size']
         self.rotation = infos['video_rotation']
         
+        # make large videos = 720p for future scaling
+        if self.size[0] >= 1920:
+            target_resolution = (1280, 720)
+        
         # edit - makes small videos randomly smaller
-        if self.size[0] <= 1920 and self.size[0] >= 480:
-            target_resolution = (None, random.randint(426, 854))
+        elif self.size[0] < 1920 and self.size[0] >= 480:
+            target_resolution = (random.randint(426, 854), None)
       
         if target_resolution and self.size[0] > target_resolution[1]:
-            # revert the order, as ffmpeg used (width, height)
-            target_resolution = target_resolution[1], target_resolution[0]
-
             if None in target_resolution:
                 ratio = 1
                 for idx, target in enumerate(target_resolution):
                     if target:
                         ratio = target / self.size[idx]
                 self.size = (int(self.size[0] * ratio), int(self.size[1] * ratio))
+
+              
             else:
                 self.size = target_resolution
+    
+
         self.resize_algo = resize_algo
 
         self.duration = infos['video_duration']
@@ -72,7 +77,6 @@ class FFMPEG_VideoReader:
 
         self.bufsize= bufsize
         self.initialize()
-
 
         self.pos = 1
         self.lastread = self.read_frame()
