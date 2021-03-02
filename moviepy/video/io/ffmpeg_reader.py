@@ -47,7 +47,7 @@ class FFMPEG_VideoReader:
         elif self.size[0] < 1920 and self.size[0] >= 480:
             target_resolution = (random.randint(426, 854), None)
       
-        if target_resolution and self.size[0] > target_resolution[1]:
+        if target_resolution and self.size[0] > target_resolution[0]:
             if None in target_resolution:
                 ratio = 1
                 for idx, target in enumerate(target_resolution):
