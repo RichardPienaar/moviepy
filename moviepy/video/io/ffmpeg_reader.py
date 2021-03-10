@@ -43,9 +43,12 @@ class FFMPEG_VideoReader:
         if self.size[0] >= 1920:
             target_resolution = (1280, 720)
         
-        # edit - makes small videos randomly smaller
+        # edit - makes medium videos randomly smaller
         elif self.size[0] < 1920 and self.size[0] >= 480:
-            target_resolution = (random.randint(426, 854), None)
+            if random.random() > 0.75:
+                target_resolution = (random.randint(426, 854), None)
+            else:
+                target_resolution = (1280, 720)
       
         if target_resolution and self.size[0] > target_resolution[0]:
             if None in target_resolution:
